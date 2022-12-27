@@ -1,8 +1,11 @@
 package com.example.learnwithsqlite;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -31,11 +34,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        overridePendingTransition(0,0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         simpan = findViewById(R.id.tambah_data);
         listview = findViewById(R.id.listview);
         biodata = new biodataTBL(getApplicationContext());
+        getSupportActionBar().setTitle("Data Siswa ");
         simpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,15 +55,15 @@ public class MainActivity extends AppCompatActivity {
     void ambil_data() {
         list = new ArrayList<objek>();
         cursor = biodata.tampil_data();
-        if (cursor != null && cursor.getCount() > 0) {
+        if (cursor != null & cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String id = cursor.getString(0);
                 String nama = cursor.getString(1);
                 String alamat = cursor.getString(2);
-                list.add(new objek("id", "nama", "alamat"));
+                list.add(new objek(id, nama, alamat));
 
             }
-            adapter = new custome_adapter(getApplicationContext(), list);
+            adapter = new custome_adapter(getApplicationContext(), list, MainActivity.this);
             listview.setAdapter(adapter);
 
         }
@@ -71,19 +76,28 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         ambil_data();
     }
+    @Override
+    public void onBackPressed(){
+        finishAffinity();
+        super.onBackPressed();
+    }
 }
 
- class custome_adapter extends BaseAdapter{
+ class
+ custome_adapter extends BaseAdapter{
     Context context;
     LayoutInflater layoutInflater;
     ArrayList<objek> model;
     TextView id,nama,alamat;
     Button edit,hapus;
-    custome_adapter(Context context,ArrayList<objek> list){
+    biodataTBL biodata;
+    Activity activity;
+    custome_adapter(Context context,ArrayList<objek> list,Activity activity){
         this.context=context;
-
+            this.activity=activity;
             this.model=list;
             layoutInflater=layoutInflater.from(context);
+            biodata=new biodataTBL(context);
         }
         @Override
         public int getCount() {
@@ -127,7 +141,30 @@ public class MainActivity extends AppCompatActivity {
             hapus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context,"hapus",Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder builder=new AlertDialog.Builder(activity);
+                    builder.setTitle("Tanya");
+                    builder.setMessage("Apakah anda ingin menghapus data ini?");
+                    builder.setPositiveButton("Hapus", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            biodata.delete(model.get(position).getId());
+
+                            Intent intent=new Intent(context,MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+
+                            ((Activity)context).finish();
+                        }
+                    });
+                    builder.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog=builder.create();
+                    alertDialog.show();
+
                 }
             });
             return view1;

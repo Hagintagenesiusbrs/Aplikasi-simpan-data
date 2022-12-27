@@ -22,7 +22,7 @@ public class edit_data extends AppCompatActivity {
         alamat.setText(getIntent().getStringExtra("alamat"));
 
         biodata=new biodataTBL(getApplicationContext());
-        getSupportActionBar().setTitle("Edit Data"+getIntent().getStringExtra("nama"));
+        getSupportActionBar().setTitle("Edit Data "+getIntent().getStringExtra("nama"));
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

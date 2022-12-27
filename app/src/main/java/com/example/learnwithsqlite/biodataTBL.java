@@ -34,22 +34,27 @@ public class biodataTBL extends SQLiteOpenHelper {
 
     void simpan_data(String nama,String alamat){
         database.execSQL(
-                "INSERT INTO" + nama_table + "values" +
+                "INSERT INTO " + nama_table + " values" +
                         "('"+random()+"','"+nama+"','"+alamat+"')"
-
-
         );
         Toast.makeText(context, "Data Tersimpan", Toast.LENGTH_SHORT).show();
     }
 
     void update_data(String id,String nama,String alamat){
-        database.execSQL("UPDATE"+nama_table+"SET nama='"+nama+"',alamat='"+alamat+"'"+"WHERE id='"+id+"'"+"");
+        database.execSQL("UPDATE "+nama_table+" SET nama='"+nama+"',alamat='"+alamat+"'"+" WHERE id='"+id+"'");
         Toast.makeText(context, "Data berhasil diupdate", Toast.LENGTH_SHORT).show();
     }
 
     Cursor tampil_data(){
         Cursor cursor=database.rawQuery("SELECT * FROM "+nama_table,null);
         return cursor;
+
+    }
+
+    void delete(String id){
+        database.execSQL(
+                "Delete from "+nama_table+" Where id='"+id+"'");
+        Toast.makeText(context,"Data berhasil di hapus",Toast.LENGTH_SHORT).show();
 
     }
 
