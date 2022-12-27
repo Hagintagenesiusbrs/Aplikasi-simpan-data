@@ -41,6 +41,12 @@ public class biodataTBL extends SQLiteOpenHelper {
         );
         Toast.makeText(context, "Data Tersimpan", Toast.LENGTH_SHORT).show();
     }
+
+    void update_data(String id,String nama,String alamat){
+        database.execSQL("UPDATE"+nama_table+"SET nama='"+nama+"',alamat='"+alamat+"'"+"WHERE id='"+id+"'"+"");
+        Toast.makeText(context, "Data berhasil diupdate", Toast.LENGTH_SHORT).show();
+    }
+
     Cursor tampil_data(){
         Cursor cursor=database.rawQuery("SELECT * FROM "+nama_table,null);
         return cursor;
